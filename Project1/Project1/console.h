@@ -3,4 +3,6 @@
 
 const HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
 
-void FullScreen();
+void Init();
+
+void GotoCur(int,int);

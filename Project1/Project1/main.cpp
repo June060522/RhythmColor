@@ -1,10 +1,20 @@
 #include <iostream>
+#include <Windows.h>
+#include <mmsystem.h>
 #include "console.h"
+#include "StartScene.h"
 
 using namespace std;
 
 int main()
 {
-	FullScreen();
-	cout << 1;
+	Init();
+	
+	PrintTitle();
+	PressSpace();
+	while (true)
+	{
+		PrintTitle();
+		int select = PrintMenu();
+	}
 }
