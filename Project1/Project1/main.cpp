@@ -9,12 +9,27 @@ using namespace std;
 int main()
 {
 	Init();
-	
-	PrintTitle();
-	PressSpace();
+
 	while (true)
 	{
-		PrintTitle();
+		PressSpace();
 		int select = PrintMenu();
+		
+		if (select == (int)Mode::Play)
+		{
+
+		}
+		else if (select == (int)Mode::Option)
+		{
+
+		}
+		else if (select == (int)Mode::Credits)
+		{
+
+		}
+		else if (select == (int)Mode::Exit)
+		{
+			break;
+		}
 	}
 }

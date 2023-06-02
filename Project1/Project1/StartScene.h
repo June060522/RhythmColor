@@ -4,7 +4,14 @@ enum class KEY
 	UP, DOWN, Space
 };
 
-void PrintTitle();
+enum class Mode
+{
+	Play, Option, Credits, Exit
+};
+
+void PrintTitleAndSpace();
+
+void PrintTitleSelectMode();
 
 void PressSpace();
 
