@@ -9,7 +9,6 @@ enum class COLOR
     LIGHT_YELLOW, WHITE
 };
 
-
 const HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
 
 void Init();

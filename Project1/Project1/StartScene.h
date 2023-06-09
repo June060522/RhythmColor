@@ -11,8 +11,12 @@ enum class Mode
 
 void PrintTitleAndSpace();
 
-void PrintTitleSelectMode();
-
 void PressSpace();
 
 int PrintMenu();
+
+void PrintStageSelect();
+
+void PrintCredit();
+
+void PrintOption();

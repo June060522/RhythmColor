@@ -107,9 +107,7 @@ void PrintTitleAndSpace()
 			return;
 	}
 }
-void PrintTitleSelectMode()
-{
-}
+
 void PressSpace()
 {
 	int x = 60;
@@ -121,9 +119,11 @@ void PressSpace()
 	cout << "                      ";
 	SetColor((int)COLOR::WHITE, (int)COLOR::BLACK);
 }
+
 int PrintMenu()
-{
-	Sleep(50);
+{ 
+	Sleep(200);
+	int key = 0;
 	int x = 50;
 	int y = 20;
 	GotoCur(x, y++);
@@ -136,20 +136,65 @@ int PrintMenu()
 	cout << "Exit";
 	x = 47;
 	y = 20;
-	
+	GotoCur(x, y);
 	while (true)
 	{
-		if (KeyController() == (int)KEY::UP)
-			y++;
+		clock_t curtime, oldtime;
+		oldtime = clock();
+		while (true)
+		{
+			key = KeyController();
+			curtime = clock();
+			if (curtime - oldtime > 99)
+			{
+				break;
+			}
+		}
 
-		if (KeyController() == (int)KEY::DOWN)
+		if (key == (int)KEY::UP)
 			y--;
-
-		if (KeyController() == (int)KEY::Space)
+		else if (key == (int)KEY::DOWN)
+			y++;
+		else if (key == (int)KEY::Space)
 			return y - 20;
 
+		if (y > 23)
+			y = 23;
+		else if (y < 20)
+			y = 20;
+
+		cout << "\b\b";
+		cout << "  ";
 		GotoCur(x, y);
 		cout << "▷";
 	}
 	return -1;
+}
+
+void PrintStageSelect()
+{
+
+}
+
+void PrintCredit()
+{
+	while (true)
+	{
+		cout << "Developer And Level Designer" << endl;
+		cout << "June" << endl << endl;
+
+		cout << "Cooperator" << endl;
+		cout << "JunYoung Teacher" << endl;
+
+		cout << "Reference Game" << endl;
+		cout << "COLORFUL RECOLOR" << endl;
+
+		cout << "Music Composer" << endl;
+		cout << "Etc" << endl;
+	}
+}
+
+void PrintOption()
+{
+
 }
