@@ -9,7 +9,8 @@ void Init()
     ConsoleCursor.bVisible = false;
     ConsoleCursor.dwSize = 1;
     SetConsoleCursorInfo(hOut, &ConsoleCursor);
-    system("mode con cols=150 lines=40");
+    SetFontSize(20, 20, 20);
+    system("mode  con lines=30   cols=130");
     SetConsoleTitle(TEXT("Rhythm Color"));
 }
 
@@ -25,6 +26,18 @@ void SetColor(int _color, int _bgColor)
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
 
     SetConsoleTextAttribute(hOut, (_bgColor << 4) | _color);
+}
+
+void SetFontSize(UINT _weight, UINT _sizex, UINT _sizey)
+{
+    static CONSOLE_FONT_INFOEX font;
+    font.cbSize = sizeof(font);
+    HANDLE hout = GetStdHandle(STD_OUTPUT_HANDLE);
+    GetCurrentConsoleFontEx(hout, false, &font);
+    font.FontWeight = _weight;
+    font.dwFontSize.X = _sizex;
+    font.dwFontSize.Y = _sizey;
+    SetCurrentConsoleFontEx(hout, false, &font);
 }
 
 int GetColor()

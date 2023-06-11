@@ -9,9 +9,8 @@ using namespace std;
 int main()
 {
 	Init();
-
 	while (true)
-	{
+	{ 
 		system("cls");
 		PressSpace();
 		int select = PrintMenu();
@@ -20,10 +19,6 @@ int main()
 		if (select == (int)Mode::Play)
 		{
 			PrintStageSelect();
-		}
-		else if (select == (int)Mode::Option)
-		{
-			PrintOption();
 		}
 		else if (select == (int)Mode::Credits)
 		{

@@ -1,8 +1,10 @@
 ﻿#include <iostream>
+#include <algorithm>
 #include "StartScene.h"
 #include "console.h"
 #include <io.h>
 #include <fcntl.h>
+#include <conio.h>
 
 using namespace std;
 
@@ -14,8 +16,14 @@ int KeyController()
 		return (int)KEY::UP;
 	if (GetAsyncKeyState(VK_DOWN) & 0x8000)
 		return (int)KEY::DOWN;
+	if (GetAsyncKeyState(VK_LEFT) & 0x8000)
+		return (int)KEY::LEFT;
+	if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
+		return (int)KEY::RIGHT;
 	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
 		return (int)KEY::Space;
+	if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
+		return (int)KEY::ESC;
 
 	return -1;
 }
@@ -43,7 +51,7 @@ bool InputSpace(const wchar_t* text)
 
 void PrintSpace(string sPrint)
 {
-	GotoCur(60, 20);
+	GotoCur(55, 20);
 	SetColor((int)COLOR::WHITE, (int)COLOR::BLACK);
 	mode = _setmode(_fileno(stdout), _O_TEXT);
 	cout << sPrint;
@@ -62,12 +70,12 @@ void PrintSpace(string sPrint)
 
 void PrintTitleAndSpace()
 {
-	int x = 22;
+	int x = 18;
 	int y = 5;
 	mode = _setmode(_fileno(stdout), _O_U16TEXT);
 	while (true)
 	{
-		x = 22;
+		x = 18;
 		y = 5;
 
 
@@ -110,7 +118,8 @@ void PrintTitleAndSpace()
 
 void PressSpace()
 {
-	int x = 60;
+	Loading();
+	int x = 55;
 	int y = 20;
 	PrintTitleAndSpace();
 
@@ -121,20 +130,18 @@ void PressSpace()
 }
 
 int PrintMenu()
-{ 
+{
 	Sleep(200);
 	int key = 0;
-	int x = 50;
+	int x = 48;
 	int y = 20;
 	GotoCur(x, y++);
 	cout << "Play";
 	GotoCur(x, y++);
-	cout << "Options";
-	GotoCur(x, y++);
 	cout << "Credits";
 	GotoCur(x, y++);
 	cout << "Exit";
-	x = 47;
+	x = 45;
 	y = 20;
 	GotoCur(x, y);
 	while (true)
@@ -173,28 +180,209 @@ int PrintMenu()
 
 void PrintStageSelect()
 {
+	Loading();
+	int curSelectX = 1;
+	int curSelectY = 0;
+	while (true)
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			for (int j = 1; j <= 10; j++)
+			{
+				if (i * 10 + j == curSelectX + curSelectY * 10)
+					PrintNum(i * 10 + j, 12 * (j - 1) + 6, 9 * i + 2, true, i);
+				else
+					PrintNum(i * 10 + j, 12 * (j - 1) + 6, 9 * i + 2);
+			}
+		}
 
+		int num = _getch();
+		if (num == 'w' || num == 'W' || num == 72)
+			curSelectY = clamp(--curSelectY, 0, 2);
+		else if (num == 's' || num == 'S' || num == 80)
+			curSelectY = clamp(++curSelectY, 0, 2);
+		else if (num == 'a' || num == 'A' || num == 75)
+			curSelectX = clamp(--curSelectX, 1, 10);
+		else if (num == 'd' || num == 'D' || num == 77)
+			curSelectX = clamp(++curSelectX, 1, 10);
+	}
 }
 
 void PrintCredit()
 {
-	while (true)
+	Loading();
+	int key = -1;
+	string printS;
+	int x = 60;
+	int y = 29;
+	int curY;
+	while (y > -5 && key != (int)KEY::ESC)
 	{
-		cout << "Developer And Level Designer" << endl;
-		cout << "June" << endl << endl;
+		SetColor((int)COLOR::RED, (int)COLOR::BLACK);
+		curY = y--;
+		printS = "Developer And Level Designer";
+		CreditText(x, curY, printS);
+		printS = "June";
+		CreditText(x, curY, printS);
+		curY++;
 
-		cout << "Cooperator" << endl;
-		cout << "JunYoung Teacher" << endl;
+		SetColor((int)COLOR::BLUE, (int)COLOR::BLACK);
+		printS = "Cooperator";
+		CreditText(x, curY, printS);
+		printS = "JunYoung Teacher";
+		CreditText(x, curY, printS);
+		curY++;
 
-		cout << "Reference Game" << endl;
-		cout << "COLORFUL RECOLOR" << endl;
+		SetColor((int)COLOR::YELLOW, (int)COLOR::BLACK);
+		printS = "Reference Game";
+		CreditText(x, curY, printS);
+		printS = "COLORFUL RECOLOR";
+		CreditText(x, curY, printS);
+		curY++;
 
-		cout << "Music Composer" << endl;
-		cout << "Etc" << endl;
+		SetColor((int)COLOR::GREEN, (int)COLOR::BLACK);
+		printS = "Music Composer";
+		CreditText(x, curY, printS);
+		printS = "Etc";
+		CreditText(x, curY, printS);
+		curY++;
+
+		clock_t curtime, oldtime;
+		oldtime = clock();
+		while (true)
+		{
+			key = KeyController();
+			curtime = clock();
+			if (curtime - oldtime > 320 || key == (int)KEY::ESC)
+			{
+				break;
+			}
+		}
+		SetColor((int)COLOR::WHITE, (int)COLOR::BLACK);
+		system("cls");
+	}
+	SetColor((int)COLOR::WHITE, (int)COLOR::BLACK);
+	system("cls");
+}
+
+void CreditText(int x, int& curY, string printS)
+{
+	if (curY <= 29 && curY > 0)
+	{
+		GotoCur(x - printS.length() / 2, curY++);
+		cout << printS;
 	}
 }
 
-void PrintOption()
+void PrintNum(int num, int posX, int posY, bool isSelect, int stage)
 {
+	if (isSelect)
+	{
+		if (stage == 0)
+			SetColor((int)COLOR::BLUE, (int)COLOR::BLACK);
+		else if (stage == 1)
+			SetColor((int)COLOR::YELLOW, (int)COLOR::BLACK);
+		else if (stage == 2)
+			SetColor((int)COLOR::GREEN, (int)COLOR::BLACK);
+	}
+	GotoCur(posX, posY++);
+	cout << "■■■■■";
+	GotoCur(posX, posY++);
+	cout << "■      ■";
+	GotoCur(posX, posY++);
+	cout << "■  " << ((num < 10) ? "0" : "") << num << "  ■";
+	GotoCur(posX, posY++);
+	cout << "■      ■";
+	GotoCur(posX, posY++);
+	cout << "■■■■■";
+	SetColor((int)COLOR::WHITE, (int)COLOR::BLACK);
+}
 
+void Loading()
+{
+	for (int i = 0; i < ScreenX; i += 2)
+	{
+		for (int j = 0; j < ScreenY; j += 5)
+		{
+			PrintLoading(j % 2 == 0, i, j);
+		}
+		Sleep(0.1f);
+		system("cls");
+	}
+
+	for (int i = ScreenX; i > 0; i -= 2)
+	{
+		for (int j = 0; j < ScreenY; j += 5)
+		{
+			PrintLoading(j % 2 == 0, i, j);
+		}
+		Sleep(0.1f);
+		system("cls");
+	}
+}
+
+void PrintLoading(bool isLeft, int posX, int posY)
+{
+	if (posX < 15)
+	{
+		SetColor((int)COLOR::LIGHT_GRREN, (int)COLOR::BLACK);
+	}
+	else if (posX < 30)
+	{
+		SetColor((int)COLOR::BLUE, (int)COLOR::BLACK);
+	}
+	else if (posX < 45)
+	{
+		SetColor((int)COLOR::SKYBLUE, (int)COLOR::BLACK);
+	}
+	else if (posX < 60)
+	{
+		SetColor((int)COLOR::LIGHT_VIOLET, (int)COLOR::BLACK);
+	}
+	else if (posX < 75)
+	{
+		SetColor((int)COLOR::VIOLET, (int)COLOR::BLACK);
+	}
+	else if (posX < 90)
+	{
+		SetColor((int)COLOR::RED, (int)COLOR::BLACK);
+	}
+	else if (posX < 115)
+	{
+		SetColor((int)COLOR::LIGHT_RED, (int)COLOR::BLACK);
+	}
+	else
+	{
+		SetColor((int)COLOR::LIGHT_YELLOW, (int)COLOR::BLACK);
+	}
+
+	if (isLeft)
+		GotoCur(posX, posY++);
+	else
+		GotoCur(ScreenX - posX, posY++);
+	cout << "■■■■■■";
+
+	if (isLeft)
+		GotoCur(posX, posY++);
+	else
+		GotoCur(ScreenX - posX, posY++);
+	cout << "■■■■■■";
+
+	if (isLeft)
+		GotoCur(posX, posY++);
+	else
+		GotoCur(ScreenX - posX, posY++);
+	cout << "■■■■■■";
+
+	if (isLeft)
+		GotoCur(posX, posY++);
+	else
+		GotoCur(ScreenX - posX, posY++);
+	cout << "■■■■■■";
+
+	if (isLeft)
+		GotoCur(posX, posY++);
+	else
+		GotoCur(ScreenX - posX, posY++);
+	cout << "■■■■■■";
 }

@@ -17,6 +17,8 @@ void GotoCur(int,int);
 
 void SetColor(int, int);
 
+void SetFontSize(UINT _weight, UINT _sizex, UINT _sizey);
+
 int GetColor();
 
 int GetBGColor();
