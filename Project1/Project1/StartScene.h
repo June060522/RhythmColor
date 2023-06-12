@@ -29,3 +29,5 @@ void PrintNum(int num, int posX, int posY, bool isSelect = false, int stage = 0)
 void Loading();
 
 void PrintLoading(bool isLeft, int posX, int posY);
+
+void PrintESC();

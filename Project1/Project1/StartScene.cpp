@@ -10,6 +10,8 @@ using namespace std;
 
 int mode;
 
+int printMenuIdx = 0;
+
 int KeyController()
 {
 	if (GetAsyncKeyState(VK_UP) & 0x8000)
@@ -35,10 +37,65 @@ bool InputSpace(const wchar_t* text)
 	oldtime = clock();
 	SetColor(rand() % 15 + 1, (int)COLOR::BLACK);
 	wcout << text << endl;
+	mode = _setmode(_fileno(stdout), _O_TEXT);
+	++printMenuIdx;
+	if (printMenuIdx > 5)
+		printMenuIdx = 0;
 	while (true)
 	{
 		curtime = clock();
 		if (KeyController() == (int)KEY::Space)
+			return true;
+		if (curtime - oldtime > 60)
+		{
+			oldtime = curtime;
+			break;
+		}
+	}
+	return false;
+}
+
+bool InputSpace(const wchar_t* text, int& key, int& y)
+{
+	int x = 45;
+	mode = _setmode(_fileno(stdout), _O_U16TEXT);
+	clock_t curtime, oldtime;
+	oldtime = clock();
+	SetColor(rand() % 15 + 1, (int)COLOR::BLACK);
+	wcout << text << endl;
+	mode = _setmode(_fileno(stdout), _O_TEXT);
+	++printMenuIdx;
+	if (printMenuIdx > 5)
+		printMenuIdx = 0;
+	while (true)
+	{
+		key = KeyController();
+		curtime = clock();
+		if (key == (int)KEY::UP)
+		{
+			GotoCur(x + 2, y);
+			cout << "\b\b";
+			cout << "  ";
+			y--;
+			y = clamp(y, 20, 22);
+			GotoCur(x, y);
+			cout << "▷";
+			key = -1;
+			Sleep(116);
+		}
+		else if (key == (int)KEY::DOWN)
+		{
+			GotoCur(x + 2, y);
+			cout << "\b\b";
+			cout << "  ";
+			y++;
+			y = clamp(y, 20, 22);
+			GotoCur(x, y);
+			cout << "▷";
+			key = -1;
+			Sleep(116);
+		}
+		else if (key == (int)KEY::Space)
 			return true;
 		if (curtime - oldtime > 60)
 		{
@@ -78,41 +135,48 @@ void PrintTitleAndSpace()
 		x = 18;
 		y = 5;
 
-
-		PrintSpace("Press 'Space' to Start");
-		GotoCur(x, y++);
-		if (InputSpace(L"██████╗ ██╗  ██╗██╗   ██╗████████╗██╗  ██╗███╗   ███╗     ██████╗ ██████╗ ██╗      ██████╗ ██████╗ "))
-			return;
-
-
-		PrintSpace("                      ");
-		GotoCur(x, y++);
-		if (InputSpace(L"██╔══██╗██║  ██║╚██╗ ██╔╝╚══██╔══╝██║  ██║████╗ ████║    ██╔════╝██╔═══██╗██║     ██╔═══██╗██╔══██╗"))
-			return;
-
-
-		PrintSpace("Press 'Space' to Start");
-		GotoCur(x, y++);
-		if (InputSpace(L"██████╔╝███████║ ╚████╔╝    ██║   ███████║██╔████╔██║    ██║     ██║   ██║██║     ██║   ██║██████╔╝"))
-			return;
-
-
-		PrintSpace("                      ");
-		GotoCur(x, y++);
-		if (InputSpace(L"██╔══██╗██╔══██║  ╚██╔╝     ██║   ██╔══██║██║╚██╔╝██║    ██║     ██║   ██║██║     ██║   ██║██╔══██╗"))
-			return;
-
-
-		PrintSpace("Press 'Space' to Start");
-		GotoCur(x, y++);
-		if (InputSpace(L"██║  ██║██║  ██║   ██║      ██║   ██║  ██║██║ ╚═╝ ██║    ╚██████╗╚██████╔╝███████╗╚██████╔╝██║  ██║"))
-			return;
-
-
-		PrintSpace("                      ");
-		GotoCur(x, y++);
-		if (InputSpace(L"╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝      ╚═╝   ╚═╝  ╚═╝╚═╝     ╚═╝     ╚═════╝ ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝  ╚═╝"))
-			return;
+		if (printMenuIdx == 0)
+		{
+			PrintSpace("Press 'Space' to Start");
+			GotoCur(x, y + printMenuIdx);
+			if (InputSpace(L"██████╗ ██╗  ██╗██╗   ██╗████████╗██╗  ██╗███╗   ███╗     ██████╗ ██████╗ ██╗      ██████╗ ██████╗ "))
+				return;
+		}
+		else if (printMenuIdx == 1)
+		{
+			PrintSpace("                      ");
+			GotoCur(x, y + printMenuIdx);
+			if (InputSpace(L"██╔══██╗██║  ██║╚██╗ ██╔╝╚══██╔══╝██║  ██║████╗ ████║    ██╔════╝██╔═══██╗██║     ██╔═══██╗██╔══██╗"))
+				return;
+		}
+		else if (printMenuIdx == 2)
+		{
+			PrintSpace("Press 'Space' to Start");
+			GotoCur(x, y + printMenuIdx);
+			if (InputSpace(L"██████╔╝███████║ ╚████╔╝    ██║   ███████║██╔████╔██║    ██║     ██║   ██║██║     ██║   ██║██████╔╝"))
+				return;
+		}
+		else if (printMenuIdx == 3)
+		{
+			PrintSpace("                      ");
+			GotoCur(x, y + printMenuIdx);
+			if (InputSpace(L"██╔══██╗██╔══██║  ╚██╔╝     ██║   ██╔══██║██║╚██╔╝██║    ██║     ██║   ██║██║     ██║   ██║██╔══██╗"))
+				return;
+		}
+		else if (printMenuIdx == 4)
+		{
+			PrintSpace("Press 'Space' to Start");
+			GotoCur(x, y + printMenuIdx);
+			if (InputSpace(L"██║  ██║██║  ██║   ██║      ██║   ██║  ██║██║ ╚═╝ ██║    ╚██████╗╚██████╔╝███████╗╚██████╔╝██║  ██║"))
+				return;
+		}
+		else if (printMenuIdx == 5)
+		{
+			PrintSpace("                      ");
+			GotoCur(x, y + printMenuIdx);
+			if (InputSpace(L"╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝      ╚═╝   ╚═╝  ╚═╝╚═╝     ╚═╝     ╚═════╝ ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝  ╚═╝"))
+				return;
+		}
 	}
 }
 
@@ -122,7 +186,6 @@ void PressSpace()
 	int x = 55;
 	int y = 20;
 	PrintTitleAndSpace();
-
 	GotoCur(x, y);
 	mode = _setmode(_fileno(stdout), _O_TEXT);
 	cout << "                      ";
@@ -133,47 +196,60 @@ int PrintMenu()
 {
 	Sleep(200);
 	int key = 0;
-	int x = 48;
-	int y = 20;
+	int x = 48, y = 20;
+	int screenX, screenY;
 	GotoCur(x, y++);
 	cout << "Play";
 	GotoCur(x, y++);
 	cout << "Credits";
 	GotoCur(x, y++);
 	cout << "Exit";
-	x = 45;
 	y = 20;
-	GotoCur(x, y);
+	screenX = 18;
+	screenY = 5;
+	GotoCur(45, y);
+	cout << "▷";
 	while (true)
 	{
-		clock_t curtime, oldtime;
-		oldtime = clock();
-		while (true)
+		screenX = 18;
+		screenY = 5;
+
+		if (printMenuIdx == 0)
 		{
-			key = KeyController();
-			curtime = clock();
-			if (curtime - oldtime > 99)
-			{
-				break;
-			}
+			GotoCur(screenX, screenY + printMenuIdx);
+			if (InputSpace(L"██████╗ ██╗  ██╗██╗   ██╗████████╗██╗  ██╗███╗   ███╗     ██████╗ ██████╗ ██╗      ██████╗ ██████╗ ", key, y))
+				return y - 20;
 		}
-
-		if (key == (int)KEY::UP)
-			y--;
-		else if (key == (int)KEY::DOWN)
-			y++;
-		else if (key == (int)KEY::Space)
-			return y - 20;
-
-		if (y > 23)
-			y = 23;
-		else if (y < 20)
-			y = 20;
-
-		cout << "\b\b";
-		cout << "  ";
-		GotoCur(x, y);
-		cout << "▷";
+		else if (printMenuIdx == 1)
+		{
+			GotoCur(screenX, screenY + printMenuIdx);
+			if (InputSpace(L"██╔══██╗██║  ██║╚██╗ ██╔╝╚══██╔══╝██║  ██║████╗ ████║    ██╔════╝██╔═══██╗██║     ██╔═══██╗██╔══██╗", key, y))
+				return y - 20;
+		}
+		else if (printMenuIdx == 2)
+		{
+			GotoCur(screenX, screenY + printMenuIdx);
+			if (InputSpace(L"██████╔╝███████║ ╚████╔╝    ██║   ███████║██╔████╔██║    ██║     ██║   ██║██║     ██║   ██║██████╔╝", key, y))
+				return y - 20;
+		}
+		else if (printMenuIdx == 3)
+		{
+			GotoCur(screenX, screenY + printMenuIdx);
+			if (InputSpace(L"██╔══██╗██╔══██║  ╚██╔╝     ██║   ██╔══██║██║╚██╔╝██║    ██║     ██║   ██║██║     ██║   ██║██╔══██╗", key, y))
+				return y - 20;
+		}
+		else if (printMenuIdx == 4)
+		{
+			GotoCur(screenX, screenY + printMenuIdx);
+			if (InputSpace(L"██║  ██║██║  ██║   ██║      ██║   ██║  ██║██║ ╚═╝ ██║    ╚██████╗╚██████╔╝███████╗╚██████╔╝██║  ██║", key, y))
+				return y - 20;
+		}
+		else if (printMenuIdx == 5)
+		{
+			GotoCur(screenX, screenY + printMenuIdx);
+			if (InputSpace(L"╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝      ╚═╝   ╚═╝  ╚═╝╚═╝     ╚═╝     ╚═════╝ ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝  ╚═╝", key, y))
+				return y - 20;
+		}
 	}
 	return -1;
 }
@@ -185,12 +261,13 @@ void PrintStageSelect()
 	int curSelectY = 0;
 	while (true)
 	{
+		PrintESC();
 		for (int i = 0; i < 3; i++)
 		{
 			for (int j = 1; j <= 10; j++)
 			{
 				if (i * 10 + j == curSelectX + curSelectY * 10)
-					PrintNum(i * 10 + j, 12 * (j - 1) + 6, 9 * i + 2, true, i);
+					PrintNum(i * 10 + j, 12 * (j - 1) + 6, 9 * i + 2, true, (j + i * 10 - 1) / 5);
 				else
 					PrintNum(i * 10 + j, 12 * (j - 1) + 6, 9 * i + 2);
 			}
@@ -218,6 +295,7 @@ void PrintCredit()
 	int curY;
 	while (y > -5 && key != (int)KEY::ESC)
 	{
+		PrintESC();
 		SetColor((int)COLOR::RED, (int)COLOR::BLACK);
 		curY = y--;
 		printS = "Developer And Level Designer";
@@ -279,11 +357,17 @@ void PrintNum(int num, int posX, int posY, bool isSelect, int stage)
 	if (isSelect)
 	{
 		if (stage == 0)
-			SetColor((int)COLOR::BLUE, (int)COLOR::BLACK);
+			SetColor((int)COLOR::RED, (int)COLOR::BLACK);
 		else if (stage == 1)
-			SetColor((int)COLOR::YELLOW, (int)COLOR::BLACK);
+			SetColor((int)COLOR::BLUE, (int)COLOR::BLACK);
 		else if (stage == 2)
+			SetColor((int)COLOR::YELLOW, (int)COLOR::BLACK);
+		else if (stage == 3)
 			SetColor((int)COLOR::GREEN, (int)COLOR::BLACK);
+		else if (stage == 4)
+			SetColor((int)COLOR::VIOLET, (int)COLOR::BLACK);
+		else if (stage == 5)
+			SetColor((int)COLOR::MINT, (int)COLOR::BLACK);
 	}
 	GotoCur(posX, posY++);
 	cout << "■■■■■";
@@ -306,7 +390,6 @@ void Loading()
 		{
 			PrintLoading(j % 2 == 0, i, j);
 		}
-		Sleep(0.1f);
 		system("cls");
 	}
 
@@ -316,7 +399,7 @@ void Loading()
 		{
 			PrintLoading(j % 2 == 0, i, j);
 		}
-		Sleep(0.1f);
+
 		system("cls");
 	}
 }
@@ -385,4 +468,11 @@ void PrintLoading(bool isLeft, int posX, int posY)
 	else
 		GotoCur(ScreenX - posX, posY++);
 	cout << "■■■■■■";
+}
+
+void PrintESC()
+{
+	SetColor((int)COLOR::WHITE, (int)COLOR::BLACK);
+	GotoCur(118, 28);
+	cout << "Back ESC";
 }

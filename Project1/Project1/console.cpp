@@ -4,6 +4,8 @@
 
 void Init()
 {
+    std::cout.tie(nullptr);
+    std::ios::sync_with_stdio(false);
     srand((unsigned)time(NULL));
     CONSOLE_CURSOR_INFO ConsoleCursor;
     ConsoleCursor.bVisible = false;
