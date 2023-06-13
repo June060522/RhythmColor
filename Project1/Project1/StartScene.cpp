@@ -26,6 +26,14 @@ int KeyController()
 		return (int)KEY::Space;
 	if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
 		return (int)KEY::ESC;
+	if (GetAsyncKeyState(0x57) & 0x8000)
+		return (int)KEY::W;
+	if (GetAsyncKeyState(0x41) & 0x8000)
+		return (int)KEY::A;
+	if (GetAsyncKeyState(0x53) & 0x8000)
+		return (int)KEY::S;
+	if (GetAsyncKeyState(0x44) & 0x8000)
+		return (int)KEY::D;
 
 	return -1;
 }
@@ -97,7 +105,7 @@ bool InputSpace(const wchar_t* text, int& key, int& y)
 		}
 		else if (key == (int)KEY::Space)
 			return true;
-		if (curtime - oldtime > 60)
+		if (curtime - oldtime > 90)
 		{
 			oldtime = curtime;
 			break;
@@ -130,6 +138,7 @@ void PrintTitleAndSpace()
 	int x = 18;
 	int y = 5;
 	mode = _setmode(_fileno(stdout), _O_U16TEXT);
+	printMenuIdx = 0;
 	while (true)
 	{
 		x = 18;
@@ -254,11 +263,14 @@ int PrintMenu()
 	return -1;
 }
 
-void PrintStageSelect()
+int PrintStageSelect()
 {
 	Loading();
 	int curSelectX = 1;
 	int curSelectY = 0;
+	clock_t curtime, oldtime;
+	int num = -1;
+	bool isTwinkle = true;
 	while (true)
 	{
 		PrintESC();
@@ -267,22 +279,36 @@ void PrintStageSelect()
 			for (int j = 1; j <= 10; j++)
 			{
 				if (i * 10 + j == curSelectX + curSelectY * 10)
-					PrintNum(i * 10 + j, 12 * (j - 1) + 6, 9 * i + 2, true, (j + i * 10 - 1) / 5);
+					PrintNum(i * 10 + j, 12 * (j - 1) + 6, 9 * i + 2, isTwinkle, true, (j + i * 10 - 1) / 5);
 				else
-					PrintNum(i * 10 + j, 12 * (j - 1) + 6, 9 * i + 2);
+					PrintNum(i * 10 + j, 12 * (j - 1) + 6, 9 * i + 2, isTwinkle);
 			}
 		}
-
-		int num = _getch();
-		if (num == 'w' || num == 'W' || num == 72)
+		int num = KeyController();
+		if (num == (int)KEY::W || num == (int)KEY::UP)
 			curSelectY = clamp(--curSelectY, 0, 2);
-		else if (num == 's' || num == 'S' || num == 80)
+		else if (num == (int)KEY::S || num == (int)KEY::DOWN)
 			curSelectY = clamp(++curSelectY, 0, 2);
-		else if (num == 'a' || num == 'A' || num == 75)
+		else if (num == (int)KEY::A || num == (int)KEY::LEFT)
 			curSelectX = clamp(--curSelectX, 1, 10);
-		else if (num == 'd' || num == 'D' || num == 77)
+		else if (num == (int)KEY::D || num == (int)KEY::RIGHT)
 			curSelectX = clamp(++curSelectX, 1, 10);
+		else if (num == (int)KEY::Space)
+			return curSelectY * 10 + curSelectX;
+		else if (num == (int)KEY::ESC)
+			break;
+		oldtime = clock();
+		while (true)
+		{
+			curtime = clock();
+			if (curtime - oldtime > 90)
+			{
+				oldtime = curtime;
+				break;
+			}
+		}
 	}
+	return -1;
 }
 
 void PrintCredit()
@@ -352,22 +378,29 @@ void CreditText(int x, int& curY, string printS)
 	}
 }
 
-void PrintNum(int num, int posX, int posY, bool isSelect, int stage)
+void PrintNum(int num, int posX, int posY,bool& isTwinkle, bool isSelect, int stage)
 {
 	if (isSelect)
 	{
-		if (stage == 0)
-			SetColor((int)COLOR::RED, (int)COLOR::BLACK);
-		else if (stage == 1)
-			SetColor((int)COLOR::BLUE, (int)COLOR::BLACK);
-		else if (stage == 2)
-			SetColor((int)COLOR::YELLOW, (int)COLOR::BLACK);
-		else if (stage == 3)
-			SetColor((int)COLOR::GREEN, (int)COLOR::BLACK);
-		else if (stage == 4)
-			SetColor((int)COLOR::VIOLET, (int)COLOR::BLACK);
-		else if (stage == 5)
-			SetColor((int)COLOR::MINT, (int)COLOR::BLACK);
+		if (isTwinkle)
+		{
+			if (stage == 0)
+				SetColor((int)COLOR::RED, (int)COLOR::BLACK);
+			else if (stage == 1)
+				SetColor((int)COLOR::BLUE, (int)COLOR::BLACK);
+			else if (stage == 2)
+				SetColor((int)COLOR::YELLOW, (int)COLOR::BLACK);
+			else if (stage == 3)
+				SetColor((int)COLOR::GREEN, (int)COLOR::BLACK);
+			else if (stage == 4)
+				SetColor((int)COLOR::VIOLET, (int)COLOR::BLACK);
+			else if (stage == 5)
+				SetColor((int)COLOR::MINT, (int)COLOR::BLACK);
+
+			isTwinkle = false;
+		}
+		else
+			isTwinkle = true;
 	}
 	GotoCur(posX, posY++);
 	cout << "■■■■■";
@@ -384,7 +417,7 @@ void PrintNum(int num, int posX, int posY, bool isSelect, int stage)
 
 void Loading()
 {
-	for (int i = 0; i < ScreenX; i += 2)
+	for (int i = 0; i < ScreenX; i += 5)
 	{
 		for (int j = 0; j < ScreenY; j += 5)
 		{
@@ -393,7 +426,7 @@ void Loading()
 		system("cls");
 	}
 
-	for (int i = ScreenX; i > 0; i -= 2)
+	for (int i = ScreenX; i > 0; i -= 5)
 	{
 		for (int j = 0; j < ScreenY; j += 5)
 		{

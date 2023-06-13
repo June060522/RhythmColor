@@ -1,7 +1,9 @@
 #pragma once
+#include<iostream>
+
 enum class KEY
 {
-	UP, DOWN, LEFT, RIGHT, Space, ESC
+	UP, DOWN, LEFT, RIGHT, W, A, S, D, Space, ESC
 };
 
 enum class Mode
@@ -18,13 +20,13 @@ void PressSpace();
 
 int PrintMenu();
 
-void PrintStageSelect();
+int PrintStageSelect();
 
 void PrintCredit();
 
 void CreditText(int x, int& curY, std::string printS);
 
-void PrintNum(int num, int posX, int posY, bool isSelect = false, int stage = 0);
+void PrintNum(int num, int posX, int posY, bool& isTwinkle, bool isSelect = false, int stage = 0);
 
 void Loading();
 

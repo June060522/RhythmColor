@@ -11,8 +11,6 @@ enum class COLOR
 
 const HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
 
-void Init();
-
 void GotoCur(int,int);
 
 void SetColor(int, int);

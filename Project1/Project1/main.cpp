@@ -1,32 +1,17 @@
 #include <iostream>
-#include <Windows.h>
-#include <mmsystem.h>
-#include "console.h"
-#include "StartScene.h"
+#include "Core.h"
 
 using namespace std;
 
 int main()
 {
-	Init();
-	while (true)
-	{ 
-		system("cls");
-		PressSpace();
-		int select = PrintMenu();
-		
-		system("cls");
-		if (select == (int)Mode::Play)
-		{
-			PrintStageSelect();
-		}
-		else if (select == (int)Mode::Credits)
-		{
-			PrintCredit();
-		}
-		else if (select == (int)Mode::Exit)
-		{
-			break;
-		}
+	if (!Core::GetInst()->Init())
+	{
+		std::cout << "게임 초기화 실패;;;";
+		Core::DestroyInst();
+		return 0;
 	}
+	Core::GetInst()->Run();
+
+	Core::DestroyInst();
 }

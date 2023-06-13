@@ -130,14 +130,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="console.cpp" />
+    <ClCompile Include="Core.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MapManager.cpp" />
     <ClCompile Include="SoundManager.cpp" />
+    <ClCompile Include="Stage.cpp" />
     <ClCompile Include="StartScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="console.h" />
+    <ClInclude Include="Core.h" />
     <ClInclude Include="define.h" />
+    <ClInclude Include="MapManager.h" />
     <ClInclude Include="SoundManager.h" />
+    <ClInclude Include="Stage.h" />
     <ClInclude Include="StartScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

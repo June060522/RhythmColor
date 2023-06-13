@@ -2,20 +2,6 @@
 #include <iostream>
 #include<Windows.h>
 
-void Init()
-{
-    std::cout.tie(nullptr);
-    std::ios::sync_with_stdio(false);
-    srand((unsigned)time(NULL));
-    CONSOLE_CURSOR_INFO ConsoleCursor;
-    ConsoleCursor.bVisible = false;
-    ConsoleCursor.dwSize = 1;
-    SetConsoleCursorInfo(hOut, &ConsoleCursor);
-    SetFontSize(20, 20, 20);
-    system("mode  con lines=30   cols=130");
-    SetConsoleTitle(TEXT("Rhythm Color"));
-}
-
 void GotoCur(int x, int y)
 {
     COORD Cur = { x, y };
