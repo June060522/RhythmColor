@@ -2,6 +2,7 @@
 #include "console.h"
 #include "StartScene.h"
 #include "MapManager.h"
+#include "SoundManager.h"
 Core* Core::m_pInst = nullptr;
 
 Core::Core()
@@ -33,6 +34,7 @@ bool Core::Init()
 void Core::Run()
 {
 	int iStage = 0;
+	SoundManager::GetInst()->PlayBgm(TEXT("Sound\\BackGround.mp3"));
 	while (true)
 	{
 		system("cls");
@@ -54,6 +56,7 @@ void Core::Run()
 		}
 		else if (select == (int)Mode::Exit)
 		{
+			SetColor((int)COLOR::WHITE, (int)COLOR::BLACK);
 			break;
 		}
 	}

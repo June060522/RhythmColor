@@ -1,8 +1,9 @@
 #include "MapManager.h"
 #include "Stage.h"
 #include "console.h"
-#include <iostream>
+#include "GameRosic.h"
 #include <string>
+#include <ctime>
 MapManager* MapManager::m_pInst = nullptr;
 
 MapManager::MapManager()
@@ -19,23 +20,11 @@ MapManager::~MapManager()
 
 bool MapManager::Init()
 {
-    std::string save;
-    char* pFileName[30];
-    for (int i = 1; i <= 30; i++)
-    {
-        save = "Stage";
-        save += (i / 10) + '0';
-        save += (i % 10) + '0';
-        /*int deg = 1;
-        if (i >= 10)
-            deg = 2;
-        char* c = new char[deg];
-        _itoa_s(i, c,1, deg);
-        save += c;
-        delete[] c;*/
-        save += ".txt";
-        pFileName[i - 1] = (char*)save.c_str();
-    }
+    char* pFileName[30] = { (char*)"Stage01.txt", (char*)"Stage02.txt" ,(char*)"Stage03.txt" , (char*)"Stage04.txt" , (char*)"Stage05.txt" , 
+    (char*)"Stage06.txt" , (char*)"Stage07.txt" , (char*)"Stage08.txt" , (char*)"Stage09.txt" , (char*)"Stage10.txt" , (char*)"Stage11.txt" , (char*)"Stage12.txt" ,
+    (char*)"Stage13.txt" , (char*)"Stage14.txt" , (char*)"Stage15.txt" , (char*)"Stage16.txt" , (char*)"Stage17.txt" , (char*)"Stage18.txt" , (char*)"Stage19.txt" ,
+    (char*)"Stage20.txt" , (char*)"Stage21.txt" , (char*)"Stage22.txt" , (char*)"Stage23.txt" , (char*)"Stage24.txt" , (char*)"Stage25.txt" , (char*)"Stage26.txt" ,
+    (char*)"Stage27.txt" , (char*)"Stage28.txt" , (char*)"Stage29.txt" , (char*)"Stage30.txt" , };
     for (int i = 0; i < 30; i++)
     {
         m_pStage[i] = new Stage;
@@ -47,10 +36,20 @@ bool MapManager::Init()
 
 void MapManager::Run(int iCurStage)
 {
+    PPLAYER tPlayer;
     m_iCurstage = iCurStage;
+    float time = 90;
+    clock_t curtime, oldtime;
     while (true)
     {
-        GotoCur(0, 0);
-        m_pStage[m_iCurstage]->Render();
+        curtime = clock();
+        oldtime = clock();
+
+        while (curtime - oldtime < time)
+		{
+            Update(tPlayer);
+            curtime = clock();
+		}
+        m_pStage[m_iCurstage]->Render(tPlayer);
     }
 }

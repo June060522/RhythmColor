@@ -14,6 +14,8 @@ enum class Mode
 const int ScreenX = 118;
 const int ScreenY = 30;
 
+int KeyController();
+
 void PrintTitleAndSpace();
 
 void PressSpace();

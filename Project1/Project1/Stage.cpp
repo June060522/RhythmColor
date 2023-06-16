@@ -2,6 +2,7 @@
 #include <fstream>
 #include "Stage.h"
 #include "define.h"
+#include "console.h"
 
 using namespace std;
 
@@ -26,66 +27,109 @@ bool Stage::Init(const char* _pFilename)
 	readFile.open(_pFilename);
 	for (int i = 0; i < MAP_Y; i++)
 	{
+		readFile.clear();
 		readFile.getline(m_cStage[i], MAP_X + 1);
-		for (int j = 0; j < MAP_X; j++)
+	}
+	readFile.close();
+	return true;
+}
+
+void Stage::Render( PPLAYER& pPlayer)
+{
+	system("cls");
+	for (int i = 0; i < 25; i++)
+	{
+		GotoCur(16,i + 2);
+		for (int j = 0; j < 50; j++)
 		{
-			if (m_cStage[i][j] == (char)STAGE_TYPE::START)
+			if (m_cStage[i][j] == (char)STAGE_TYPE::REDWALL)
 			{
+				SetColor((int)COLOR::RED, (int)COLOR::BLACK);
+				cout << "¡á";
+			}
+			else if (m_cStage[i][j] == (char)STAGE_TYPE::BLUEWALL)
+			{
+				SetColor((int)COLOR::BLUE, (int)COLOR::BLACK);
+				cout << "¡á";
+			}
+			else if (m_cStage[i][j] == (char)STAGE_TYPE::YELLOWWALL)
+			{
+				SetColor((int)COLOR::YELLOW, (int)COLOR::BLACK);
+				cout << "¡á";
+			}
+			else if (m_cStage[i][j] == (char)STAGE_TYPE::GREENWALL)
+			{
+				SetColor((int)COLOR::GREEN, (int)COLOR::BLACK);
+				cout << "¡á";
+			}
+			else if (m_cStage[i][j] == (char)STAGE_TYPE::VIOLETWALL)
+			{
+				SetColor((int)COLOR::VIOLET, (int)COLOR::BLACK);
+				cout << "¡á";
+			}
+			else if (m_cStage[i][j] == (char)STAGE_TYPE::MINTWALL)
+			{
+				SetColor((int)COLOR::MINT, (int)COLOR::BLACK);
+				cout << "¡á";
+			}
+			else if (m_cStage[i][j] == (char)STAGE_TYPE::ROAD)
+			{
+				cout << "  ";
+			}
+			else if (m_cStage[i][j] == (char)STAGE_TYPE::START)
+			{
+				cout << "¬¥";
 				m_tStart.x = j;
 				m_tStart.y = i;
 			}
 			else if (m_cStage[i][j] == (char)STAGE_TYPE::END)
 			{
+				cout << "¡Ú";
 				m_tEnd.x = j;
 				m_tEnd.y = i;
 			}
-		}
-	}
-	readFile.close();
-}
-
-void Stage::Render()
-{
-	system("cls");
-	for (int i = 0; i < 10; i++)
-	{
-		for (int j = 0; j < 10; j++)
-		{
-			if (m_cStage[i][j] == (char)STAGE_TYPE::REDWALL)
-				cout << "¤±";
-			else if (m_cStage[i][j] == (char)STAGE_TYPE::BLUEWALL)
-				cout << "¤±";
-			else if (m_cStage[i][j] == (char)STAGE_TYPE::YELLOWWALL)
-				cout << "¤±";
-			else if (m_cStage[i][j] == (char)STAGE_TYPE::GREENWALL)
-				cout << "¤±";
-			else if (m_cStage[i][j] == (char)STAGE_TYPE::VIOLETWALL)
-				cout << "¤±";
-			else if (m_cStage[i][j] == (char)STAGE_TYPE::MINTWALL)
-				cout << "¤±";
-			else if (m_cStage[i][j] == (char)STAGE_TYPE::ROAD)
-				cout << "¤±";
-			else if (m_cStage[i][j] == (char)STAGE_TYPE::START)
-				cout << "0";
-			else if (m_cStage[i][j] == (char)STAGE_TYPE::END)
-				cout << "¤±";
 			else if (m_cStage[i][j] == (char)STAGE_TYPE::TELEPORT)
-				cout << "¤±";
+			{
+				cout << "¢Í";
+			}
 			else if (m_cStage[i][j] == (char)STAGE_TYPE::CHANGERED)
-				cout << "¤±";
+			{
+				SetColor((int)COLOR::RED, (int)COLOR::BLACK);
+				cout << "¢Ã";
+			}
 			else if (m_cStage[i][j] == (char)STAGE_TYPE::CHANGEBLUE)
-				cout << "¤±";
+			{
+				SetColor((int)COLOR::BLUE, (int)COLOR::BLACK);
+				cout << "¢Ã";
+			}
 			else if (m_cStage[i][j] == (char)STAGE_TYPE::CHANGEYELLOW)
-				cout << "¤±";
+			{
+				SetColor((int)COLOR::YELLOW, (int)COLOR::BLACK);
+				cout << "¢Ã";
+			}
 			else if (m_cStage[i][j] == (char)STAGE_TYPE::CHANGEGREEN)
-				cout << "¤±";
+			{
+				SetColor((int)COLOR::GREEN, (int)COLOR::BLACK);
+				cout << "¢Ã";
+			}
 			else if (m_cStage[i][j] == (char)STAGE_TYPE::CHANGEVIOLET)
-				cout << "¤±";
+			{
+				SetColor((int)COLOR::VIOLET, (int)COLOR::BLACK);
+				cout << "¢Ã";
+			}
 			else if (m_cStage[i][j] == (char)STAGE_TYPE::CHANGEMINT)
-				cout << "¤±";
-			else if (m_cStage[i][j] == (char)STAGE_TYPE::BLUEWALL)
-				cout << "¤±";
+			{
+				SetColor((int)COLOR::MINT, (int)COLOR::BLACK);
+				cout << "¢Ã";
+			}
 		}
 		cout << endl;
 	}
+	//pPlayer->tpos.x = m_tStart.x;
+	//pPlayer->tpos.y = m_tStart.y;
+}
+
+void Stage::Event(PPLAYER& pPlayer)
+{
+
 }

@@ -191,7 +191,6 @@ void PrintTitleAndSpace()
 
 void PressSpace()
 {
-	Loading();
 	int x = 55;
 	int y = 20;
 	PrintTitleAndSpace();
@@ -296,7 +295,10 @@ int PrintStageSelect()
 		else if (num == (int)KEY::Space)
 			return curSelectY * 10 + curSelectX;
 		else if (num == (int)KEY::ESC)
+		{
+			Loading();
 			break;
+		}
 		oldtime = clock();
 		while (true)
 		{
@@ -347,10 +349,35 @@ void PrintCredit()
 		SetColor((int)COLOR::GREEN, (int)COLOR::BLACK);
 		printS = "Music Composer";
 		CreditText(x, curY, printS);
-		printS = "Etc";
+		printS = "Waterfall - Mewpot Music";
+		CreditText(x, curY, printS);
+		printS = "glow up - DHDMUSIC";
+		CreditText(x, curY, printS);
+		printS = "Fresh Five - DHDMUSIC";
+		CreditText(x, curY, printS);
+		printS = "Fashionable - KORANDRINO";
+		CreditText(x, curY, printS);
+		printS = "Chill Hip Hop Livestyle Vlog - Silent Station";
+		CreditText(x, curY, printS);
+		printS = "Breakthrough - Infraction";
+		CreditText(x, curY, printS);
+		printS = "Sailing Boat - LEXMusic";
 		CreditText(x, curY, printS);
 		curY++;
 
+		SetColor((int)COLOR::VIOLET, (int)COLOR::BLACK);
+		printS = "Effect Composer";
+		CreditText(x, curY, printS);
+		printS = "Button Click - Mike Koenig";
+		CreditText(x, curY, printS);
+		printS = "Move - Mike Koenig";
+		CreditText(x, curY, printS);
+		printS = "Loading - qubodup";
+		CreditText(x, curY, printS);
+		printS = "Fail - Riot Games";
+		CreditText(x, curY, printS);
+		printS = "Clear - DayDreamSound";
+		CreditText(x, curY, printS);
 		clock_t curtime, oldtime;
 		oldtime = clock();
 		while (true)
@@ -367,6 +394,7 @@ void PrintCredit()
 	}
 	SetColor((int)COLOR::WHITE, (int)COLOR::BLACK);
 	system("cls");
+	Loading();
 }
 
 void CreditText(int x, int& curY, string printS)
