@@ -1,6 +1,6 @@
 #pragma once
 #include "define.h"
-#include "GameRosic.h"
+#include "GameRogic.h"
 class Stage
 {
 public:
@@ -16,6 +16,8 @@ public:
 	char GetMap(int x, int y) { return m_cStage[y][x]; }
 public:
 	bool Init(const char* _pFilename);
-	void Render(PPLAYER& pPlayer);
-	void Event(PPLAYER& pPlayer);
+	void Render(PPLAYER pPlayer);
+	bool Event(PPLAYER pPlayer, bool& isClear);
+	void PlayerRender(PPLAYER pPlayer);
+	void Update(PPLAYER pPlayer);
 };

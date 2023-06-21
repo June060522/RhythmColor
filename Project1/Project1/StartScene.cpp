@@ -5,6 +5,7 @@
 #include <io.h>
 #include <fcntl.h>
 #include <conio.h>
+#include "SoundManager.h"
 
 using namespace std;
 
@@ -53,7 +54,10 @@ bool InputSpace(const wchar_t* text)
 	{
 		curtime = clock();
 		if (KeyController() == (int)KEY::Space)
+		{
+			SoundManager::GetInst()->PlayEffect(TEXT("Sound\\ButtonClick.wav"));
 			return true;
+		}
 		if (curtime - oldtime > 60)
 		{
 			oldtime = curtime;
@@ -104,7 +108,10 @@ bool InputSpace(const wchar_t* text, int& key, int& y)
 			Sleep(116);
 		}
 		else if (key == (int)KEY::Space)
+		{
+			SoundManager::GetInst()->PlayEffect(TEXT("Sound\\ButtonClick.wav"));
 			return true;
+		}
 		if (curtime - oldtime > 90)
 		{
 			oldtime = curtime;
@@ -191,6 +198,7 @@ void PrintTitleAndSpace()
 
 void PressSpace()
 {
+	SoundManager::GetInst()->PlayBgm(TEXT("Sound\\BackGround.mp3"));
 	int x = 55;
 	int y = 20;
 	PrintTitleAndSpace();
@@ -285,17 +293,33 @@ int PrintStageSelect()
 		}
 		int num = KeyController();
 		if (num == (int)KEY::W || num == (int)KEY::UP)
+		{
+			SoundManager::GetInst()->PlayEffect(TEXT("Sound\\ButtonClick.wav"));
 			curSelectY = clamp(--curSelectY, 0, 2);
+		}
 		else if (num == (int)KEY::S || num == (int)KEY::DOWN)
+		{
+			SoundManager::GetInst()->PlayEffect(TEXT("Sound\\ButtonClick.wav"));
 			curSelectY = clamp(++curSelectY, 0, 2);
+		}
 		else if (num == (int)KEY::A || num == (int)KEY::LEFT)
+		{
+			SoundManager::GetInst()->PlayEffect(TEXT("Sound\\ButtonClick.wav"));
 			curSelectX = clamp(--curSelectX, 1, 10);
+		}
 		else if (num == (int)KEY::D || num == (int)KEY::RIGHT)
+		{
+			SoundManager::GetInst()->PlayEffect(TEXT("Sound\\ButtonClick.wav"));
 			curSelectX = clamp(++curSelectX, 1, 10);
+		}
 		else if (num == (int)KEY::Space)
+		{
+			SoundManager::GetInst()->PlayEffect(TEXT("Sound\\ButtonClick.wav"));
 			return curSelectY * 10 + curSelectX;
+		}
 		else if (num == (int)KEY::ESC)
 		{
+			SoundManager::GetInst()->PlayEffect(TEXT("Sound\\ButtonClick.wav"));
 			Loading();
 			break;
 		}
@@ -303,7 +327,7 @@ int PrintStageSelect()
 		while (true)
 		{
 			curtime = clock();
-			if (curtime - oldtime > 90)
+			if (curtime - oldtime > 60)
 			{
 				oldtime = curtime;
 				break;
@@ -386,6 +410,7 @@ void PrintCredit()
 			curtime = clock();
 			if (curtime - oldtime > 320 || key == (int)KEY::ESC)
 			{
+				SoundManager::GetInst()->PlayEffect(TEXT("Sound\\ButtonClick.wav"));
 				break;
 			}
 		}
@@ -445,6 +470,7 @@ void PrintNum(int num, int posX, int posY,bool& isTwinkle, bool isSelect, int st
 
 void Loading()
 {
+	SoundManager::GetInst()->PlayEffect(TEXT("Sound\\Loading.wav"));
 	for (int i = 0; i < ScreenX; i += 5)
 	{
 		for (int j = 0; j < ScreenY; j += 5)
@@ -454,6 +480,7 @@ void Loading()
 		system("cls");
 	}
 
+	SoundManager::GetInst()->PlayEffect(TEXT("Sound\\Loading.wav"));
 	for (int i = ScreenX; i > 0; i -= 5)
 	{
 		for (int j = 0; j < ScreenY; j += 5)

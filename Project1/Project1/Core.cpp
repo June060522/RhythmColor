@@ -34,7 +34,6 @@ bool Core::Init()
 void Core::Run()
 {
 	int iStage = 0;
-	SoundManager::GetInst()->PlayBgm(TEXT("Sound\\BackGround.mp3"));
 	while (true)
 	{
 		system("cls");
@@ -44,11 +43,14 @@ void Core::Run()
 		system("cls");
 		if (select == (int)Mode::Play)
 		{
-			iStage = PrintStageSelect();
-			if (iStage == -1)
-				continue;
-			else
-				MapManager::GetInst()->Run(iStage-1);
+			while (true)
+			{
+				iStage = PrintStageSelect();
+				if (iStage == -1)
+					break;
+				else
+					MapManager::GetInst()->Run(iStage-1);
+			}
 		}
 		else if (select == (int)Mode::Credits)
 		{
