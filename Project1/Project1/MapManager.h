@@ -1,4 +1,5 @@
 #pragma once
+#include "GameRogic.h"
 #include "define.h"
 class Stage;
 class MapManager
@@ -27,4 +28,5 @@ public:
 public:
 	bool Init();
 	void Run(int iCurStage);
+	void Reset(int& iCurStage, float& time, PLAYER& tPlayer, POS& tStartPos);
 };

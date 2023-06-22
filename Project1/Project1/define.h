@@ -21,4 +21,8 @@ enum class STAGE_TYPE
 	CHANGEGREEN = 'G',
 	CHANGEVIOLET = 'V',
 	CHANGEMINT = 'M',
+	LEFT = 'l',
+	RIGHT = 'r',
+	UP = 'u',
+	DOWN = 'd'
 };

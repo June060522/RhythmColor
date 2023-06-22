@@ -83,7 +83,7 @@ bool InputSpace(const wchar_t* text, int& key, int& y)
 	{
 		key = KeyController();
 		curtime = clock();
-		if (key == (int)KEY::UP)
+		if (key == (int)KEY::UP || key == (int)KEY::W)
 		{
 			GotoCur(x + 2, y);
 			cout << "\b\b";
@@ -95,7 +95,7 @@ bool InputSpace(const wchar_t* text, int& key, int& y)
 			key = -1;
 			Sleep(116);
 		}
-		else if (key == (int)KEY::DOWN)
+		else if (key == (int)KEY::DOWN || key == (int)KEY::S)
 		{
 			GotoCur(x + 2, y);
 			cout << "\b\b";
@@ -198,7 +198,6 @@ void PrintTitleAndSpace()
 
 void PressSpace()
 {
-	SoundManager::GetInst()->PlayBgm(TEXT("Sound\\BackGround.mp3"));
 	int x = 55;
 	int y = 20;
 	PrintTitleAndSpace();

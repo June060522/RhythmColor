@@ -33,6 +33,7 @@ bool Core::Init()
 
 void Core::Run()
 {
+	SoundManager::GetInst()->PlayBgm(TEXT("Sound\\BackGround.mp3"));
 	int iStage = 0;
 	while (true)
 	{

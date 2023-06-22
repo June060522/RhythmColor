@@ -1,8 +1,8 @@
+#include "GameRogic.h"
 #include "MapManager.h"
 #include "SoundManager.h"
 #include "Stage.h"
 #include "console.h"
-#include "GameRogic.h"
 #include <string>
 #include <ctime>
 MapManager* MapManager::m_pInst = nullptr;
@@ -35,29 +35,72 @@ bool MapManager::Init()
 	return true;
 }
 
-void Ini(PPLAYER _pPlayer, PPOS _pStartPos, PPOS _pEndpos)
-{
-	_pStartPos->x = 2;
-	_pStartPos->y = 23;
-	_pEndpos->x = 14;
-	_pEndpos->y = 7;
-	PLAYER tSetplayer = { *_pStartPos,{},(int)COLOR::RED,(int)Direction::left };
-	*_pPlayer = tSetplayer;
-}
-
-
 void MapManager::Run(int iCurStage)
 {
 	Init();
 	bool isClear = false;
 	PLAYER tPlayer = {};
 	POS tStartPos = {};
-	POS tEndPos = {};
 	m_iCurstage = iCurStage;
-	Ini(&tPlayer, &tStartPos, &tEndPos);
-	float time;//여기가 비트
+	float time = 0;//여기가 비트
 	clock_t curtime, oldtime;
+	Reset(iCurStage, time, tPlayer, tStartPos);
+	curtime = clock();
+	oldtime = clock();
+	while (!isClear)
+	{
+		while (curtime - oldtime < time)
+		{
+			m_pStage[m_iCurstage]->Update(&tPlayer, isClear);
+			curtime = clock();
+		}
 
+		oldtime = clock();
+
+		while (m_pStage[m_iCurstage]->Event(&tPlayer, isClear))
+		{
+			m_pStage[m_iCurstage]->PlayerRender(&tPlayer);
+		}
+
+		if (isClear)
+			break;
+
+		if (!m_pStage[m_iCurstage]->CheckDie(&tPlayer))
+		{
+			Init();
+			Reset(iCurStage, time, tPlayer, tStartPos);
+			continue;
+		}
+
+
+
+		if (tPlayer.iCurDir == (int)Direction::down)
+		{
+			m_pStage[m_iCurstage]->PrintDirection(Direction::up);
+			tPlayer.iCurDir = (int)Direction::up;
+		}
+		else if (tPlayer.iCurDir == (int)Direction::up)
+		{
+			m_pStage[m_iCurstage]->PrintDirection(Direction::down);
+			tPlayer.iCurDir = (int)Direction::down;
+		}
+		else if (tPlayer.iCurDir == (int)Direction::left)
+		{
+			m_pStage[m_iCurstage]->PrintDirection(Direction::right);
+			tPlayer.iCurDir = (int)Direction::right;
+		}
+		else if (tPlayer.iCurDir == (int)Direction::right)
+		{
+			m_pStage[m_iCurstage]->PrintDirection(Direction::left);
+			tPlayer.iCurDir = (int)Direction::left;
+		}
+	}
+
+	SoundManager::GetInst()->PlayBgm(TEXT("Sound\\BackGround.mp3"));
+}
+
+void MapManager::Reset(int& iCurStage, float& time, PLAYER& pPlayer, POS& pStartPos)
+{
 	if (iCurStage < 5)
 	{
 		SoundManager::GetInst()->PlayBgm(TEXT("Sound\\Chapter1.mp3"));
@@ -88,33 +131,5 @@ void MapManager::Run(int iCurStage)
 		SoundManager::GetInst()->PlayBgm(TEXT("Sound\\Chapter6.mp3"));
 		time = 600;
 	}
-
-	m_pStage[m_iCurstage]->Render(&tPlayer);
-	curtime = clock();
-	oldtime = clock();
-	while (!isClear)
-	{
-		while (curtime - oldtime < time)
-		{
-			m_pStage[m_iCurstage]->Update(&tPlayer);
-			curtime = clock();
-		}
-
-		oldtime = clock();
-
-		while (m_pStage[m_iCurstage]->Event(&tPlayer, isClear))
-		{
-			m_pStage[m_iCurstage]->PlayerRender(&tPlayer);
-		}
-		if (tPlayer.iCurDir == (int)Direction::down)
-			tPlayer.iCurDir = (int)Direction::up;
-		else if (tPlayer.iCurDir == (int)Direction::up)
-			tPlayer.iCurDir = (int)Direction::down;
-		else if (tPlayer.iCurDir == (int)Direction::left)
-			tPlayer.iCurDir = (int)Direction::right;
-		else if (tPlayer.iCurDir == (int)Direction::right)
-			tPlayer.iCurDir = (int)Direction::left;
-	}
-
-	SoundManager::GetInst()->PlayBgm(TEXT("Sound\\BackGround.mp3"));
+	m_pStage[m_iCurstage]->Render(&pPlayer, &pStartPos);
 }

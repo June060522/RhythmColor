@@ -16,8 +16,12 @@ public:
 	char GetMap(int x, int y) { return m_cStage[y][x]; }
 public:
 	bool Init(const char* _pFilename);
-	void Render(PPLAYER pPlayer);
+	void Render(PPLAYER pPlayer, PPOS pStartPos);
 	bool Event(PPLAYER pPlayer, bool& isClear);
 	void PlayerRender(PPLAYER pPlayer);
-	void Update(PPLAYER pPlayer);
+	void Update(PPLAYER pPlayer, bool& isClear);
+
+public:
+	void PrintDirection(Direction dir);
+	bool CheckDie(PPLAYER pPlayer);
 };
