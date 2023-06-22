@@ -6,6 +6,7 @@
 #include <fcntl.h>
 #include <io.h>
 #include "StartScene.h"
+#include "SoundManager.h"
 
 using namespace std;
 
@@ -159,8 +160,12 @@ void Stage::Render(PPLAYER pPlayer, PPOS pStartPos)
 	cout << "Back ESC";
 }
 
-bool Stage::Event(PPLAYER pPlayer, bool& isClear)
+bool Stage::Event(PPLAYER pPlayer, bool& isClear, bool& isdelete)
 {
+	int x = pPlayer->tpos.x + 8;
+	int y = pPlayer->tpos.y + 2;
+	x *= 2;
+
 	if (pPlayer->iCurDir == (int)Direction::left)
 	{
 		pPlayer->tNewPos.x = pPlayer->tpos.x - 1;
@@ -184,7 +189,11 @@ bool Stage::Event(PPLAYER pPlayer, bool& isClear)
 
 	if (m_cStage[pPlayer->tNewPos.y][pPlayer->tNewPos.x] == (char)STAGE_TYPE::END)
 	{
+		GotoCur(x + 2,y);
+		cout << "\b\b  ";
+		SoundManager::GetInst()->PlayEffect(TEXT("Sound\\Clear.wav"));
 		isClear = true;
+		Sleep(700);
 		return false;
 	}
 	else if (m_cStage[pPlayer->tNewPos.y][pPlayer->tNewPos.x] == (char)STAGE_TYPE::ROAD)
@@ -195,26 +204,47 @@ bool Stage::Event(PPLAYER pPlayer, bool& isClear)
 	}
 	else if (m_cStage[pPlayer->tNewPos.y][pPlayer->tNewPos.x] == (char)STAGE_TYPE::RIGHT)
 	{
-
+		pPlayer->iCurDir = (int)Direction::right;
+		GotoCur(x + 2, y);
+		cout << "\b\b  ";
+		pPlayer->tpos = pPlayer->tNewPos;
+		pPlayer->tpos.x ++;
+		isdelete = true;
+		return true;
 	}
 	else if (m_cStage[pPlayer->tNewPos.y][pPlayer->tNewPos.x] == (char)STAGE_TYPE::LEFT)
 	{
-
+		pPlayer->iCurDir = (int)Direction::left;
+		GotoCur(x + 2, y);
+		cout << "\b\b  ";
+		swap(pPlayer->tpos,pPlayer->tNewPos);
+		pPlayer->tpos.x --;
+		swap(m_cStage[pPlayer->tpos.y][pPlayer->tpos.x], m_cStage[pPlayer->tNewPos.y][pPlayer->tNewPos.x]);
+		isdelete = true;
+		return true;
 	}
 	else if (m_cStage[pPlayer->tNewPos.y][pPlayer->tNewPos.x] == (char)STAGE_TYPE::UP)
 	{
-
+		pPlayer->iCurDir = (int)Direction::up;
+		GotoCur(x + 2, y);
+		cout << "\b\b  ";
+		pPlayer->tpos = pPlayer->tNewPos;
+		pPlayer->tpos.y --;
+		isdelete = true;
+		return true;
 	}
 	else if (m_cStage[pPlayer->tNewPos.y][pPlayer->tNewPos.x] == (char)STAGE_TYPE::DOWN)
 	{
-
+		pPlayer->iCurDir = (int)Direction::down;
+		GotoCur(x + 2, y);
+		cout << "\b\b  ";
+		pPlayer->tpos = pPlayer->tNewPos;
+		pPlayer->tpos.y ++;
+		isdelete = true;
+		return true;
 	}
 	else if (!(m_cStage[pPlayer->tNewPos.y][pPlayer->tNewPos.x] >= (char)STAGE_TYPE::REDWALL && m_cStage[pPlayer->tNewPos.y][pPlayer->tNewPos.x] <= (char)STAGE_TYPE::MINTWALL))
 	{
-		int x = pPlayer->tpos.x + 8;
-		int y = pPlayer->tpos.y + 2;
-		x *= 2;
-
 		if (m_cStage[pPlayer->tNewPos.y][pPlayer->tNewPos.x] == (char)STAGE_TYPE::CHANGERED)
 			pPlayer->iColor = (int)COLOR::RED;
 		else if (m_cStage[pPlayer->tNewPos.y][pPlayer->tNewPos.x] == (char)STAGE_TYPE::CHANGEBLUE)
@@ -227,25 +257,25 @@ bool Stage::Event(PPLAYER pPlayer, bool& isClear)
 			pPlayer->iColor = (int)COLOR::VIOLET;
 		else if (m_cStage[pPlayer->tNewPos.y][pPlayer->tNewPos.x] == (char)STAGE_TYPE::CHANGEMINT)
 			pPlayer->iColor = (int)COLOR::MINT;
-
+		isdelete = true;
 		GotoCur(x + 2, y);
 		cout << "\b\b  ";
 
 		if (pPlayer->iCurDir == (int)Direction::left)
 		{
-			pPlayer->tNewPos.x -= 2;
+			pPlayer->tNewPos.x --;
 		}
 		else if (pPlayer->iCurDir == (int)Direction::right)
 		{
-			pPlayer->tNewPos.x += 2;
+			pPlayer->tNewPos.x ++;
 		}
 		else if (pPlayer->iCurDir == (int)Direction::up)
 		{
-			pPlayer->tNewPos.y -= 2;
+			pPlayer->tNewPos.y --;
 		}
 		else if (pPlayer->iCurDir == (int)Direction::down)
 		{
-			pPlayer->tNewPos.y += 2;
+			pPlayer->tNewPos.y ++;
 		}
 
 		swap(m_cStage[pPlayer->tpos.y][pPlayer->tpos.x], m_cStage[pPlayer->tNewPos.y][pPlayer->tNewPos.x]);
@@ -260,25 +290,25 @@ void Stage::Update(PPLAYER _pPlayer, bool& isClear)
 {
 	int input = KeyController();
 
-	if (input == (int)KEY::A && !(m_cStage[_pPlayer->tpos.y][_pPlayer->tpos.x - 1] >= (char)STAGE_TYPE::REDWALL &&
+	if ((input == (int)KEY::A || input == (int)KEY::LEFT) && !(m_cStage[_pPlayer->tpos.y][_pPlayer->tpos.x - 1] >= (char)STAGE_TYPE::REDWALL &&
 		m_cStage[_pPlayer->tpos.y][_pPlayer->tpos.x - 1] <= (char)STAGE_TYPE::MINTWALL))
 	{
 		_pPlayer->iCurDir = (int)Direction::left;
 		PrintDirection(Direction::left);
 	}
-	else if (input == (int)KEY::D && !(m_cStage[_pPlayer->tpos.y][_pPlayer->tpos.x + 1] >= (char)STAGE_TYPE::REDWALL &&
+	else if ((input == (int)KEY::D || input == (int)KEY::RIGHT) && !(m_cStage[_pPlayer->tpos.y][_pPlayer->tpos.x + 1] >= (char)STAGE_TYPE::REDWALL &&
 		m_cStage[_pPlayer->tpos.y][_pPlayer->tpos.x + 1] <= (char)STAGE_TYPE::MINTWALL))
 	{
 		_pPlayer->iCurDir = (int)Direction::right;
 		PrintDirection(Direction::right);
 	}
-	else if (input == (int)KEY::S && !(m_cStage[_pPlayer->tpos.y + 1][_pPlayer->tpos.x] >= (char)STAGE_TYPE::REDWALL &&
+	else if ((input == (int)KEY::S || input == (int)KEY::DOWN) && !(m_cStage[_pPlayer->tpos.y + 1][_pPlayer->tpos.x] >= (char)STAGE_TYPE::REDWALL &&
 		m_cStage[_pPlayer->tpos.y + 1][_pPlayer->tpos.x] <= (char)STAGE_TYPE::MINTWALL))
 	{
 		_pPlayer->iCurDir = (int)Direction::down;
 		PrintDirection(Direction::down);
 	}
-	else if (input == (int)KEY::W && !(m_cStage[_pPlayer->tpos.y - 1][_pPlayer->tpos.x] >= (char)STAGE_TYPE::REDWALL &&
+	else if ((input == (int)KEY::W || input == (int)KEY::UP) && !(m_cStage[_pPlayer->tpos.y - 1][_pPlayer->tpos.x] >= (char)STAGE_TYPE::REDWALL &&
 		m_cStage[_pPlayer->tpos.y - 1][_pPlayer->tpos.x] <= (char)STAGE_TYPE::MINTWALL))
 	{
 		_pPlayer->iCurDir = (int)Direction::up;
@@ -290,7 +320,7 @@ void Stage::Update(PPLAYER _pPlayer, bool& isClear)
 	}
 }
 
-void Stage::PlayerRender(PPLAYER pPlayer)
+void Stage::PlayerRender(PPLAYER pPlayer, bool isdelete)
 {
 	SetColor((int)pPlayer->iColor, (int)COLOR::BLACK);
 	int x = pPlayer->tpos.x + 8;
@@ -314,8 +344,12 @@ void Stage::PlayerRender(PPLAYER pPlayer)
 	{
 		y++;
 	}
-	GotoCur(x + 2, y);
-	cout << "\b\b  ";
+
+	if (!isdelete)
+	{
+		GotoCur(x + 2, y);
+		cout << "\b\b  ";
+	}
 
 	clock_t curtime, oldtime;
 	oldtime = clock();
@@ -323,7 +357,7 @@ void Stage::PlayerRender(PPLAYER pPlayer)
 	while (true)
 	{
 		curtime = clock();
-		if (curtime - oldtime > 5)
+		if (curtime - oldtime > 10)
 		{
 			oldtime = curtime;
 			break;

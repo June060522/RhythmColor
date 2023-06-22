@@ -314,7 +314,8 @@ int PrintStageSelect()
 		else if (num == (int)KEY::Space)
 		{
 			SoundManager::GetInst()->PlayEffect(TEXT("Sound\\ButtonClick.wav"));
-			return curSelectY * 10 + curSelectX;
+			if(curSelectY * 10 + curSelectX <= 20)
+				return curSelectY * 10 + curSelectX;
 		}
 		else if (num == (int)KEY::ESC)
 		{

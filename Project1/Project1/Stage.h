@@ -17,8 +17,8 @@ public:
 public:
 	bool Init(const char* _pFilename);
 	void Render(PPLAYER pPlayer, PPOS pStartPos);
-	bool Event(PPLAYER pPlayer, bool& isClear);
-	void PlayerRender(PPLAYER pPlayer);
+	bool Event(PPLAYER pPlayer, bool& isClear, bool& isdelete);
+	void PlayerRender(PPLAYER pPlayer, bool isdelete);
 	void Update(PPLAYER pPlayer, bool& isClear);
 
 public:

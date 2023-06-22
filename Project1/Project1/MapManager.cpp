@@ -47,6 +47,7 @@ void MapManager::Run(int iCurStage)
 	Reset(iCurStage, time, tPlayer, tStartPos);
 	curtime = clock();
 	oldtime = clock();
+	bool isdelete = false;
 	while (!isClear)
 	{
 		while (curtime - oldtime < time)
@@ -57,9 +58,10 @@ void MapManager::Run(int iCurStage)
 
 		oldtime = clock();
 
-		while (m_pStage[m_iCurstage]->Event(&tPlayer, isClear))
+		while (m_pStage[m_iCurstage]->Event(&tPlayer, isClear,isdelete))
 		{
-			m_pStage[m_iCurstage]->PlayerRender(&tPlayer);
+			m_pStage[m_iCurstage]->PlayerRender(&tPlayer,isdelete);
+			isdelete = false;
 		}
 
 		if (isClear)
@@ -67,6 +69,7 @@ void MapManager::Run(int iCurStage)
 
 		if (!m_pStage[m_iCurstage]->CheckDie(&tPlayer))
 		{
+			SoundManager::GetInst()->PlayEffect(TEXT("Sound\\Die.wav"));
 			Init();
 			Reset(iCurStage, time, tPlayer, tStartPos);
 			continue;
@@ -114,7 +117,7 @@ void MapManager::Reset(int& iCurStage, float& time, PLAYER& pPlayer, POS& pStart
 	else if (iCurStage < 15)
 	{
 		SoundManager::GetInst()->PlayBgm(TEXT("Sound\\Chapter3.mp3"));
-		time = 600;
+		time = 550;
 	}
 	else if (iCurStage < 20)
 	{
