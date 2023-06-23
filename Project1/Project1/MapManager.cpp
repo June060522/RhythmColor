@@ -122,7 +122,7 @@ void MapManager::Reset(int& iCurStage, float& time, PLAYER& pPlayer, POS& pStart
 	else if (iCurStage < 20)
 	{
 		SoundManager::GetInst()->PlayBgm(TEXT("Sound\\Chapter4.mp3"));
-		time = 600;
+		time = 500;
 	}
 	else if (iCurStage < 25)
 	{

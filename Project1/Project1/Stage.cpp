@@ -192,8 +192,10 @@ bool Stage::Event(PPLAYER pPlayer, bool& isClear, bool& isdelete)
 		GotoCur(x + 2,y);
 		cout << "\b\b  ";
 		SoundManager::GetInst()->PlayEffect(TEXT("Sound\\Clear.wav"));
+		SetColor((int)COLOR::WHITE, (int)COLOR::BLACK);
+		cout << "clear!";
 		isClear = true;
-		Sleep(700);
+		Sleep(1500);
 		return false;
 	}
 	else if (m_cStage[pPlayer->tNewPos.y][pPlayer->tNewPos.x] == (char)STAGE_TYPE::ROAD)

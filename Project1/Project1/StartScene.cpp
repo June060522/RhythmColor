@@ -43,7 +43,7 @@ bool InputSpace(const wchar_t* text)
 {
 	mode = _setmode(_fileno(stdout), _O_U16TEXT);
 	clock_t curtime, oldtime;
-	oldtime = clock();
+	oldtime = clock();	
 	SetColor(rand() % 15 + 1, (int)COLOR::BLACK);
 	wcout << text << endl;
 	mode = _setmode(_fileno(stdout), _O_TEXT);

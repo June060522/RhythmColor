@@ -9,9 +9,10 @@ D:\Github(D)\RhythmColor\Project1\Project1\SoundManager.h(2,9): warning C4067: �
   SoundManager.cpp
 D:\Github(D)\RhythmColor\Project1\Project1\SoundManager.h(2,9): warning C4067: 전처리기 지시문 다음에 예기치 않은 토큰이 있습니다. 줄 바꿈 문자가 필요합니다.
   Stage.cpp
+D:\Github(D)\RhythmColor\Project1\Project1\SoundManager.h(2,9): warning C4067: 전처리기 지시문 다음에 예기치 않은 토큰이 있습니다. 줄 바꿈 문자가 필요합니다.
   StartScene.cpp
 D:\Github(D)\RhythmColor\Project1\Project1\SoundManager.h(2,9): warning C4067: 전처리기 지시문 다음에 예기치 않은 토큰이 있습니다. 줄 바꿈 문자가 필요합니다.
-D:\Github(D)\RhythmColor\Project1\Project1\StartScene.cpp(428,42): warning C4267: '인수': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Github(D)\RhythmColor\Project1\Project1\StartScene.cpp(429,42): warning C4267: '인수': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   코드를 생성하고 있습니다.
   Previous IPDB not found, fall back to full compilation.
   All 228 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
